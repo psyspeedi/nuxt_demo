@@ -72,11 +72,11 @@ export const useOrdersStore = defineStore('orders', () => {
 
   const updateStatus = async (id: string, status: OrderStatus, comment?: string) => {
     const orderIndex = orders.value.findIndex(o => o.id === id)
-    const oldStatus = orders.value[orderIndex]?.status
+    const existingOrder = orders.value[orderIndex]
     const oldOrder = currentOrder.value
 
-    if (orderIndex !== -1) {
-      orders.value[orderIndex] = { ...orders.value[orderIndex], status }
+    if (existingOrder) {
+      orders.value[orderIndex] = { ...existingOrder, status }
     }
     if (currentOrder.value?.id === id) {
       currentOrder.value = { ...currentOrder.value, status }
@@ -85,7 +85,7 @@ export const useOrdersStore = defineStore('orders', () => {
     updating.value = true
     try {
       const response = await api.patch<Order>(`/orders/${id}/status`, { status, comment })
-      if (orderIndex !== -1) {
+      if (existingOrder) {
         orders.value[orderIndex] = response
       }
       if (currentOrder.value?.id === id) {
@@ -93,8 +93,8 @@ export const useOrdersStore = defineStore('orders', () => {
       }
       notifications.success('Статус обновлён')
     } catch (err) {
-      if (orderIndex !== -1) {
-        orders.value[orderIndex] = { ...orders.value[orderIndex], status: oldStatus }
+      if (existingOrder) {
+        orders.value[orderIndex] = existingOrder
       }
       if (currentOrder.value?.id === id && oldOrder) {
         currentOrder.value = oldOrder

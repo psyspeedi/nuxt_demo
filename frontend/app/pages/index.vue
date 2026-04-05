@@ -170,5 +170,5 @@ const processingCount = computed(() =>
 await useAsyncData('dashboard', async () => {
   await ordersStore.fetchOrders({ limit: 100 })
   return true
-})
+}, { server: false })
 </script>

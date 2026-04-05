@@ -135,8 +135,11 @@ export function seedIfEmpty(): void {
       insertProduct.run(p.id, p.name, p.sku, p.category, p.price, p.stock, p.unit, p.description)
     }
 
+    // Spread orders: 5 in current month, rest across last ~4 months
+    const DAYS_AGO = [0, 1, 2, 4, 6, 10, 15, 20, 27, 35, 44, 54, 65, 77, 90, 100, 112, 120]
+
     for (let i = 1; i <= 18; i++) {
-      const daysAgo = (i * 7) % 120  // deterministic: 7, 14, 21 ... days ago
+      const daysAgo = DAYS_AGO[i - 1] ?? (i * 7 % 120)
       const createdAt = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000)
       const status = STATUSES[(i - 1) % 6]
       const itemCount = 2 + (i % 5)  // 2..5 items, deterministic

@@ -160,5 +160,5 @@ onMounted(() => {
   }).format(new Date())
 })
 
-await useAsyncData('dashboard-stats', () => ordersStore.fetchDashboardStats(), { server: false })
+onMounted(() => { ordersStore.fetchDashboardStats() })
 </script>

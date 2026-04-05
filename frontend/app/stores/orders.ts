@@ -6,7 +6,7 @@ export const useOrdersStore = defineStore('orders', () => {
   const dashboardOrders = ref<Order[]>([])
   const currentOrder = ref<Order | null>(null)
   const loading = ref(false)
-  const dashboardLoading = ref(false)
+  const dashboardLoading = ref(true)
   const updating = ref(false)
   const total = ref(0)
   const totalPages = ref(0)

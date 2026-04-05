@@ -23,6 +23,7 @@ services:
 
   nginx:
     image: nginx:alpine
+    profiles: ["ssl"]
     ports:
       - "${FRONTEND_PORT:-8080}:8080"
       - "${API_PORT:-8081}:8081"

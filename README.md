@@ -2,8 +2,6 @@
 
 Демонстрационный проект: B2B-дашборд с каталогом товаров, корзиной и управлением заказами.
 
-**Демо:** http://hardovsky.uk:8080
-
 ---
 
 ## Стек
@@ -26,7 +24,7 @@
 
 ---
 
-## Запуск локально
+## Запуск локально (без Docker)
 
 ### Требования
 
@@ -58,10 +56,29 @@ npm run dev
 
 ## Запуск в Docker
 
+### Локально (HTTP)
+
 ```bash
 cp .env.example .env
-docker compose up -d --build
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
 - Frontend: http://localhost:8080
 - API: http://localhost:8081
+
+### На сервере (HTTPS)
+
+```bash
+cp .env.example .env
+# Отредактировать .env: APP_HOST=<домен>, JWT_SECRET=<случайная строка>
+docker compose --profile ssl up -d --build
+```
+
+Требует наличия SSL-сертификата в `/root/cert/`. Автообновление через acme.sh + cron.
+
+---
+
+## Демо-доступ
+
+- Email: `manager@b2b.com`
+- Пароль: `demo1234`

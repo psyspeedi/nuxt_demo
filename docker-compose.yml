@@ -17,12 +17,10 @@ services:
   frontend:
     build:
       context: ./frontend
-      args:
-        NUXT_PUBLIC_API_BASE: "http://${APP_HOST:-localhost}:${API_PORT:-8081}"
     ports:
       - "${FRONTEND_PORT:-8080}:3000"
     environment:
-      NUXT_PUBLIC_API_BASE: "http://${APP_HOST:-localhost}:${API_PORT:-8081}"
+      NUXT_API_INTERNAL_BASE: "http://api:3001"
     restart: unless-stopped
     depends_on: [api]
     networks: [app-net]

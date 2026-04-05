@@ -1,17 +1,11 @@
+import { ru } from 'vuetify/locale'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
   runtimeConfig: {
-    public: {
-      // Переопределяется через NUXT_PUBLIC_API_BASE в production
-      // На SSR-сервере devProxy не работает — нужен полный URL до Express API
-      apiBase: 'http://localhost:3001',
-    },
-  },
-  nitro: {
-    devProxy: {
-      '/api': { target: 'http://localhost:3001/api', changeOrigin: true },
-    },
+    // Переопределяется через NUXT_API_INTERNAL_BASE (только для SSR-прокси, не публичный)
+    apiInternalBase: 'http://localhost:3001',
   },
   modules: [
     ['@nuxt/eslint', { config: { typescriptTypeChecked: true } }],
@@ -63,6 +57,7 @@ export default defineNuxtConfig({
         fallback: 'en',
         messages: {
           ru: {
+            ...ru,
             dataTable: {
               itemsPerPageText: 'Строк на странице:',
               ariaLabel: {

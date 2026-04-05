@@ -12,14 +12,14 @@
       </VCol>
     </VRow>
 
-    <VRow class="mb-6">
+    <VRow class="mb-6" align="stretch">
       <VCol cols="12" sm="6" lg="3">
         <StatsCard
           title="Заказов за месяц"
           :value="ordersStore.currentMonthOrders.length"
           icon="mdi-clipboard-text-outline"
           color="blue"
-          :loading="ordersStore.loading"
+          :loading="ordersStore.dashboardLoading"
         />
       </VCol>
       <VCol cols="12" sm="6" lg="3">
@@ -28,16 +28,16 @@
           :value="formatCurrency(ordersStore.currentMonthTotal)"
           icon="mdi-currency-rub"
           color="green"
-          :loading="ordersStore.loading"
+          :loading="ordersStore.dashboardLoading"
         />
       </VCol>
       <VCol cols="12" sm="6" lg="3">
         <StatsCard
           title="В обработке"
-          :value="processingCount"
+          :value="ordersStore.processingCount"
           icon="mdi-progress-clock"
           color="orange"
-          :loading="ordersStore.loading"
+          :loading="ordersStore.dashboardLoading"
         />
       </VCol>
       <VCol cols="12" sm="6" lg="3">
@@ -53,7 +53,7 @@
 
     <VRow>
       <VCol cols="12" md="8">
-        <SpendingChart :orders="ordersStore.orders" />
+        <SpendingChart :orders="ordersStore.dashboardOrders" />
       </VCol>
       <VCol cols="12" md="4">
         <VCard rounded="lg" border>
@@ -104,7 +104,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-if="ordersStore.loading">
+              <tr v-if="ordersStore.dashboardLoading">
                 <td colspan="4" class="text-center">
                   <VSkeletonLoader type="table-row@5" />
                 </td>
@@ -140,7 +140,6 @@
 
 <script setup lang="ts">
 import { formatCurrency, formatDate } from '~/lib/format'
-import { OrderStatus } from '~~/types/order'
 
 definePageMeta({
   title: 'Дашборд'
@@ -161,14 +160,5 @@ onMounted(() => {
   }).format(new Date())
 })
 
-const processingCount = computed(() =>
-  ordersStore.orders.filter(o =>
-    o.status === OrderStatus.Confirmed || o.status === OrderStatus.Processing
-  ).length
-)
-
-await useAsyncData('dashboard', async () => {
-  await ordersStore.fetchOrders({ limit: 100 })
-  return true
-}, { server: false })
+await useAsyncData('dashboard-stats', () => ordersStore.fetchDashboardStats(), { server: false })
 </script>

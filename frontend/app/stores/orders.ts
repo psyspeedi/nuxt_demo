@@ -3,8 +3,10 @@ import type { Order, OrderFilters, OrderStatus } from '~~/types/order'
 
 export const useOrdersStore = defineStore('orders', () => {
   const orders = ref<Order[]>([])
+  const dashboardOrders = ref<Order[]>([])
   const currentOrder = ref<Order | null>(null)
   const loading = ref(false)
+  const dashboardLoading = ref(false)
   const updating = ref(false)
   const total = ref(0)
   const totalPages = ref(0)
@@ -15,7 +17,7 @@ export const useOrdersStore = defineStore('orders', () => {
   const orderById = (id: string) => orders.value.find(o => o.id === id)
 
   const recentOrders = computed(() =>
-    [...orders.value]
+    [...dashboardOrders.value]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 5)
   )
@@ -23,12 +25,29 @@ export const useOrdersStore = defineStore('orders', () => {
   const currentMonthOrders = computed(() => {
     const now = new Date()
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-    return orders.value.filter(o => new Date(o.createdAt) >= startOfMonth)
+    return dashboardOrders.value.filter(o => new Date(o.createdAt) >= startOfMonth)
   })
 
   const currentMonthTotal = computed(() =>
     currentMonthOrders.value.reduce((sum, o) => sum + o.totalAmount, 0)
   )
+
+  const processingCount = computed(() =>
+    dashboardOrders.value.filter(o => o.status === 'processing').length
+  )
+
+  const fetchDashboardStats = async () => {
+    dashboardLoading.value = true
+    try {
+      const response = await api.get<{ items: Order[], total: number, totalPages: number }>(
+        '/orders',
+        { limit: 1000 } as Record<string, unknown>
+      )
+      dashboardOrders.value = response.items ?? []
+    } finally {
+      dashboardLoading.value = false
+    }
+  }
 
   const fetchOrders = async (params?: OrderFilters) => {
     loading.value = true
@@ -89,8 +108,10 @@ export const useOrdersStore = defineStore('orders', () => {
 
   return {
     orders,
+    dashboardOrders,
     currentOrder,
     loading,
+    dashboardLoading,
     updating,
     total,
     totalPages,
@@ -98,7 +119,9 @@ export const useOrdersStore = defineStore('orders', () => {
     recentOrders,
     currentMonthOrders,
     currentMonthTotal,
+    processingCount,
     fetchOrders,
+    fetchDashboardStats,
     fetchOrder,
     updateStatus
   }

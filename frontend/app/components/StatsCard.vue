@@ -1,7 +1,7 @@
 <template>
-  <VCard rounded="lg" border>
+  <VCard rounded="lg" border height="100%">
     <VSkeletonLoader v-if="loading" type="list-item-avatar-two-line" />
-    <VCardText v-else class="d-flex align-center ga-4">
+    <VCardText v-else class="d-flex align-start ga-4">
       <VAvatar :color="`${color}-lighten-4`" size="56" rounded="lg">
         <VIcon :color="color" size="28" :icon="icon" />
       </VAvatar>

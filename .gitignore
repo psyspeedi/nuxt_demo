@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+
+# Nuxt
+.nuxt
+.output
+
+# Build
+dist
+build
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Editor & OS
+.DS_Store
+.idea
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.cache
+
+# API database
+api/data/*.sqlite
